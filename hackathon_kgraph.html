@@ -1,0 +1,259 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 750px;
+                 background-color: #111111;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 750px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#3498db", "font": {"color": "white"}, "id": "Wataru Takahara", "label": "Wataru Takahara", "shape": "dot", "size": 15, "type": "project"}, {"color": "#2ecc71", "font": {"color": "white"}, "id": "Experimental Data Analysis_P", "label": "Experimental Data Analysis", "shape": "dot", "size": 28, "type": "theme"}, {"color": "#3498db", "font": {"color": "white"}, "id": "XAScribe", "label": "XAScribe", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "m2snano:  nanoparticle image analysis", "label": "m2snano:  nanoparticle image analysis", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "ChromatographyMiner", "label": "ChromatographyMiner", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "Team Datalab - Guillemot", "label": "Team Datalab - Guillemot", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "CrystaLenz", "label": "CrystaLenz", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "BENZENE", "label": "BENZENE", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "Alhaytham Eye", "label": "Alhaytham Eye", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "SpectroBot", "label": "SpectroBot", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "XLLM_KFUPM", "label": "XLLM_KFUPM", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "AgentHackers", "label": "AgentHackers", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "MixSense", "label": "MixSense", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "Explain that Automation!", "label": "Explain that Automation!", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "teamDOS", "label": "teamDOS", "shape": "dot", "size": 15, "type": "project"}, {"color": "#2ecc71", "font": {"color": "white"}, "id": "Generative And Inverse Design_P", "label": "Generative And Inverse Design", "shape": "dot", "size": 28, "type": "theme"}, {"color": "#3498db", "font": {"color": "white"}, "id": "Perovskite Discoverers", "label": "Perovskite Discoverers", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "MaterialMind", "label": "MaterialMind", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "ThinFilm.ai", "label": "ThinFilm.ai", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "RedoxFlow", "label": "RedoxFlow", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "T2-Crystal-Relaxation", "label": "T2-Crystal-Relaxation", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "LLM4ConProp", "label": "LLM4ConProp", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "PolyPredictor", "label": "PolyPredictor", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "VERA", "label": "VERA", "shape": "dot", "size": 15, "type": "project"}, {"color": "#2ecc71", "font": {"color": "white"}, "id": "Autonomous Discovery, Agents, Labs_P", "label": "Autonomous Discovery, Agents, Labs", "shape": "dot", "size": 28, "type": "theme"}, {"color": "#3498db", "font": {"color": "white"}, "id": "Catalyze", "label": "Catalyze", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "ACME (Autonomous Critical Materials Extraction)", "label": "ACME (Autonomous Critical Materials Extraction)", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "Team AgentLearn", "label": "Team AgentLearn", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "SDLsmart", "label": "SDLsmart", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "F.A.D.E", "label": "F.A.D.E", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "MAGE Team", "label": "MAGE Team", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "Team 4 KFUPM", "label": "Team 4 KFUPM", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "Code4Catalysis-KFUPM", "label": "Code4Catalysis-KFUPM", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "ODE Forge", "label": "ODE Forge", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "NEDD - Next Experiment Data Driven", "label": "NEDD - Next Experiment Data Driven", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "SyntheSeek", "label": "SyntheSeek", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "CryoSensor", "label": "CryoSensor", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "MIDAS", "label": "MIDAS", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "TIB AI4SCI", "label": "TIB AI4SCI", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "MCP4SDL", "label": "MCP4SDL", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "SCARA Team 15, KFUPM", "label": "SCARA Team 15, KFUPM", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "Baker", "label": "Baker", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "NeuroSymbolic", "label": "NeuroSymbolic", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "V-RAPIDS", "label": "V-RAPIDS", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "AESOP", "label": "AESOP", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "Sol-Agent", "label": "Sol-Agent", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "Unstructured Lab Notebook Assistant (ULNA)", "label": "Unstructured Lab Notebook Assistant (ULNA)", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "ReaSafe", "label": "ReaSafe", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "The Fullerene Factory", "label": "The Fullerene Factory", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "ARIA", "label": "ARIA", "shape": "dot", "size": 15, "type": "project"}, {"color": "#2ecc71", "font": {"color": "white"}, "id": "Reproducible AI4Science Workflows, Trust_P", "label": "Reproducible AI4Science Workflows, Trust", "shape": "dot", "size": 28, "type": "theme"}, {"color": "#9b59b6", "font": {"color": "white"}, "id": "Autonomous Discovery, Agents, Labs_S", "label": "Autonomous Discovery, Agents, Labs", "shape": "dot", "size": 20, "type": "secondary_theme"}, {"color": "#9b59b6", "font": {"color": "white"}, "id": "Generative And Inverse Design_S", "label": "Generative And Inverse Design", "shape": "dot", "size": 20, "type": "secondary_theme"}, {"color": "#3498db", "font": {"color": "white"}, "id": "MJS", "label": "MJS", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "Materials Design Group", "label": "Materials Design Group", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "AtomicShorts", "label": "AtomicShorts", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "MatGen", "label": "MatGen", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "Quantumania AI", "label": "Quantumania AI", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "H2-Guardians", "label": "H2-Guardians", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "The Featurizers", "label": "The Featurizers", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "Ecorxn Advisor", "label": "Ecorxn Advisor", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "MP-LLM", "label": "MP-LLM", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "Tomatak Twins", "label": "Tomatak Twins", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "AtomBridge", "label": "AtomBridge", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "Chem_Code_Bench", "label": "Chem_Code_Bench", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "Triple_As", "label": "Triple_As", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "Virtual Lab", "label": "Virtual Lab", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "Clueless-scientist", "label": "Clueless-scientist", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "Ragalicious", "label": "Ragalicious", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "AssemblAI", "label": "AssemblAI", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "Best Team", "label": "Best Team", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "Parse Patrol", "label": "Parse Patrol", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "Fordham Reasoning Team", "label": "Fordham Reasoning Team", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "SciForge", "label": "SciForge", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "RealWorldChem", "label": "RealWorldChem", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "Titanarium", "label": "Titanarium", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "TEAM Alex Oh", "label": "TEAM Alex Oh", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "Team Alloyed Minds", "label": "Team Alloyed Minds", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "MINT LLM", "label": "MINT LLM", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "SCALE: Scaffold Conscious Agent for Learning \u0026 Exploration", "label": "SCALE: Scaffold Conscious Agent for Learning \u0026 Exploration", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "BASIS \u201a\u00c4\u00ec Bulk And Surface Interface Simulations with Intelligent Systems", "label": "BASIS \u201a\u00c4\u00ec Bulk And Surface Interface Simulations with Intelligent Systems", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "CrysTalk", "label": "CrysTalk", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "Amalgam-NCSU", "label": "Amalgam-NCSU", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "LARA-HPC: A LAnguage model-powered Research Assistant for HPC", "label": "LARA-HPC: A LAnguage model-powered Research Assistant for HPC", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "VASPilot", "label": "VASPilot", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "PhaseDiag Agents", "label": "PhaseDiag Agents", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "ChemGraph-IR", "label": "ChemGraph-IR", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "LIAC\u0027s  AdsKRK and DynaAgent", "label": "LIAC\u0027s  AdsKRK and DynaAgent", "shape": "dot", "size": 15, "type": "project"}, {"color": "#9b59b6", "font": {"color": "white"}, "id": "Scientific Data Curation_S", "label": "Scientific Data Curation", "shape": "dot", "size": 20, "type": "secondary_theme"}, {"color": "#3498db", "font": {"color": "white"}, "id": "ATOMS Lab", "label": "ATOMS Lab", "shape": "dot", "size": 15, "type": "project"}, {"color": "#9b59b6", "font": {"color": "white"}, "id": "Educational and Collaborative AI Tools_S", "label": "Educational and Collaborative AI Tools", "shape": "dot", "size": 20, "type": "secondary_theme"}, {"color": "#9b59b6", "font": {"color": "white"}, "id": "Experimental Data Analysis_S", "label": "Experimental Data Analysis", "shape": "dot", "size": 20, "type": "secondary_theme"}, {"color": "#3498db", "font": {"color": "white"}, "id": "LaBros", "label": "LaBros", "shape": "dot", "size": 15, "type": "project"}, {"color": "#2ecc71", "font": {"color": "white"}, "id": "Educational and Collaborative AI Tools_P", "label": "Educational and Collaborative AI Tools", "shape": "dot", "size": 28, "type": "theme"}, {"color": "#9b59b6", "font": {"color": "white"}, "id": "Reproducible AI4Science Workflows, Trust_S", "label": "Reproducible AI4Science Workflows, Trust", "shape": "dot", "size": 20, "type": "secondary_theme"}, {"color": "#3498db", "font": {"color": "white"}, "id": "MindMesh", "label": "MindMesh", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "MatSci LapLab", "label": "MatSci LapLab", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "Material AI Agent Team", "label": "Material AI Agent Team", "shape": "dot", "size": 15, "type": "project"}, {"color": "#9b59b6", "font": {"color": "white"}, "id": "Computational Physics_S", "label": "Computational Physics", "shape": "dot", "size": 20, "type": "secondary_theme"}, {"color": "#3498db", "font": {"color": "white"}, "id": "CuPirates", "label": "CuPirates", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "CafChem", "label": "CafChem", "shape": "dot", "size": 15, "type": "project"}, {"color": "#2ecc71", "font": {"color": "white"}, "id": "Computational Physics_P", "label": "Computational Physics", "shape": "dot", "size": 28, "type": "theme"}, {"color": "#3498db", "font": {"color": "white"}, "id": "Team Storm", "label": "Team Storm", "shape": "dot", "size": 15, "type": "project"}, {"color": "#2ecc71", "font": {"color": "white"}, "id": "Generative and Inverse Design_P", "label": "Generative and Inverse Design", "shape": "dot", "size": 28, "type": "theme"}, {"color": "#3498db", "font": {"color": "white"}, "id": "Team Rait", "label": "Team Rait", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "Hugging Reactions", "label": "Hugging Reactions", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "GAINS: Generative AI for No-PAIN Structures", "label": "GAINS: Generative AI for No-PAIN Structures", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "CrystalGen", "label": "CrystalGen", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "JH_sqr", "label": "JH_sqr", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "LLM-BT", "label": "LLM-BT", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "SmeLLMap", "label": "SmeLLMap", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "MatterMinds", "label": "MatterMinds", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "ZeroMAT", "label": "ZeroMAT", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "PolyNexus", "label": "PolyNexus", "shape": "dot", "size": 15, "type": "project"}, {"color": "#2ecc71", "font": {"color": "white"}, "id": "Other_P", "label": "Other", "shape": "dot", "size": 28, "type": "theme"}, {"color": "#3498db", "font": {"color": "white"}, "id": "OntoKG", "label": "OntoKG", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "SciScribe", "label": "SciScribe", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "DepositionIQ", "label": "DepositionIQ", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "HEA query", "label": "HEA query", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "ChemBot", "label": "ChemBot", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "RagyMaterials", "label": "RagyMaterials", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "GoldKnowledge Retrievers", "label": "GoldKnowledge Retrievers", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "ExpAlign", "label": "ExpAlign", "shape": "dot", "size": 15, "type": "project"}, {"color": "#2ecc71", "font": {"color": "white"}, "id": "Scientific Data Curation_P", "label": "Scientific Data Curation", "shape": "dot", "size": 28, "type": "theme"}, {"color": "#3498db", "font": {"color": "white"}, "id": "BandgapMiner", "label": "BandgapMiner", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "MuMMIE", "label": "MuMMIE", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "OntoMapper", "label": "OntoMapper", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "Cameliers", "label": "Cameliers", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "Team_Tc", "label": "Team_Tc", "shape": "dot", "size": 15, "type": "project"}, {"color": "#3498db", "font": {"color": "white"}, "id": "L.A.R.A", "label": "L.A.R.A", "shape": "dot", "size": 15, "type": "project"}, {"color": "#9b59b6", "font": {"color": "white"}, "id": "Other_S", "label": "Other", "shape": "dot", "size": 20, "type": "secondary_theme"}, {"color": "#3498db", "font": {"color": "white"}, "id": "nan", "label": "nan", "shape": "dot", "size": 15, "type": "project"}, {"color": "#2ecc71", "font": {"color": "white"}, "id": "nan_P", "label": "nan", "shape": "dot", "size": 28, "type": "theme"}]);
+                  edges = new vis.DataSet([{"from": "Wataru Takahara", "relation": "primary_theme", "to": "Experimental Data Analysis_P", "width": 1}, {"from": "Experimental Data Analysis_P", "relation": "primary_theme", "to": "XAScribe", "width": 1}, {"from": "Experimental Data Analysis_P", "relation": "primary_theme", "to": "m2snano:  nanoparticle image analysis", "width": 1}, {"from": "Experimental Data Analysis_P", "relation": "primary_theme", "to": "ChromatographyMiner", "width": 1}, {"from": "Experimental Data Analysis_P", "relation": "primary_theme", "to": "Team Datalab - Guillemot", "width": 1}, {"from": "Experimental Data Analysis_P", "relation": "primary_theme", "to": "CrystaLenz", "width": 1}, {"from": "Experimental Data Analysis_P", "relation": "primary_theme", "to": "BENZENE", "width": 1}, {"from": "Experimental Data Analysis_P", "relation": "primary_theme", "to": "Alhaytham Eye", "width": 1}, {"from": "Experimental Data Analysis_P", "relation": "primary_theme", "to": "SpectroBot", "width": 1}, {"from": "Experimental Data Analysis_P", "relation": "primary_theme", "to": "XLLM_KFUPM", "width": 1}, {"from": "Experimental Data Analysis_P", "relation": "primary_theme", "to": "AgentHackers", "width": 1}, {"from": "Experimental Data Analysis_P", "relation": "primary_theme", "to": "MixSense", "width": 1}, {"from": "Experimental Data Analysis_P", "relation": "primary_theme", "to": "Explain that Automation!", "width": 1}, {"from": "teamDOS", "relation": "primary_theme", "to": "Generative And Inverse Design_P", "width": 1}, {"from": "Generative And Inverse Design_P", "relation": "primary_theme", "to": "Perovskite Discoverers", "width": 1}, {"from": "Generative And Inverse Design_P", "relation": "primary_theme", "to": "MaterialMind", "width": 1}, {"from": "Generative And Inverse Design_P", "relation": "primary_theme", "to": "ThinFilm.ai", "width": 1}, {"from": "Generative And Inverse Design_P", "relation": "primary_theme", "to": "RedoxFlow", "width": 1}, {"from": "Generative And Inverse Design_P", "relation": "primary_theme", "to": "T2-Crystal-Relaxation", "width": 1}, {"from": "Generative And Inverse Design_P", "relation": "primary_theme", "to": "LLM4ConProp", "width": 1}, {"from": "Generative And Inverse Design_P", "relation": "primary_theme", "to": "PolyPredictor", "width": 1}, {"from": "VERA", "relation": "primary_theme", "to": "Autonomous Discovery, Agents, Labs_P", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_P", "relation": "primary_theme", "to": "Catalyze", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_P", "relation": "primary_theme", "to": "ACME (Autonomous Critical Materials Extraction)", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_P", "relation": "primary_theme", "to": "Team AgentLearn", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_P", "relation": "primary_theme", "to": "SDLsmart", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_P", "relation": "primary_theme", "to": "F.A.D.E", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_P", "relation": "primary_theme", "to": "MAGE Team", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_P", "relation": "primary_theme", "to": "Team 4 KFUPM", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_P", "relation": "primary_theme", "to": "Code4Catalysis-KFUPM", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_P", "relation": "primary_theme", "to": "ODE Forge", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_P", "relation": "primary_theme", "to": "NEDD - Next Experiment Data Driven", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_P", "relation": "primary_theme", "to": "SyntheSeek", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_P", "relation": "primary_theme", "to": "CryoSensor", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_P", "relation": "primary_theme", "to": "MIDAS", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_P", "relation": "primary_theme", "to": "TIB AI4SCI", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_P", "relation": "primary_theme", "to": "MCP4SDL", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_P", "relation": "primary_theme", "to": "SCARA Team 15, KFUPM", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_P", "relation": "primary_theme", "to": "Baker", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_P", "relation": "primary_theme", "to": "NeuroSymbolic", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_P", "relation": "primary_theme", "to": "V-RAPIDS", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_P", "relation": "primary_theme", "to": "AESOP", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_P", "relation": "primary_theme", "to": "Sol-Agent", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_P", "relation": "primary_theme", "to": "Unstructured Lab Notebook Assistant (ULNA)", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_P", "relation": "primary_theme", "to": "ReaSafe", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_P", "relation": "primary_theme", "to": "The Fullerene Factory", "width": 1}, {"from": "ARIA", "relation": "primary_theme", "to": "Reproducible AI4Science Workflows, Trust_P", "width": 1}, {"from": "ARIA", "relation": "secondary_theme", "to": "Autonomous Discovery, Agents, Labs_S", "width": 1}, {"from": "ARIA", "relation": "secondary_theme", "to": "Generative And Inverse Design_S", "width": 1}, {"from": "Reproducible AI4Science Workflows, Trust_P", "relation": "primary_theme", "to": "MJS", "width": 1}, {"from": "Reproducible AI4Science Workflows, Trust_P", "relation": "primary_theme", "to": "Materials Design Group", "width": 1}, {"from": "Reproducible AI4Science Workflows, Trust_P", "relation": "primary_theme", "to": "AtomicShorts", "width": 1}, {"from": "Reproducible AI4Science Workflows, Trust_P", "relation": "primary_theme", "to": "MatGen", "width": 1}, {"from": "Reproducible AI4Science Workflows, Trust_P", "relation": "primary_theme", "to": "Quantumania AI", "width": 1}, {"from": "Reproducible AI4Science Workflows, Trust_P", "relation": "primary_theme", "to": "H2-Guardians", "width": 1}, {"from": "Reproducible AI4Science Workflows, Trust_P", "relation": "primary_theme", "to": "The Featurizers", "width": 1}, {"from": "Reproducible AI4Science Workflows, Trust_P", "relation": "primary_theme", "to": "Ecorxn Advisor", "width": 1}, {"from": "Reproducible AI4Science Workflows, Trust_P", "relation": "primary_theme", "to": "MP-LLM", "width": 1}, {"from": "Reproducible AI4Science Workflows, Trust_P", "relation": "primary_theme", "to": "Tomatak Twins", "width": 1}, {"from": "Reproducible AI4Science Workflows, Trust_P", "relation": "primary_theme", "to": "AtomBridge", "width": 1}, {"from": "Reproducible AI4Science Workflows, Trust_P", "relation": "primary_theme", "to": "Chem_Code_Bench", "width": 1}, {"from": "Reproducible AI4Science Workflows, Trust_P", "relation": "primary_theme", "to": "Triple_As", "width": 1}, {"from": "Reproducible AI4Science Workflows, Trust_P", "relation": "primary_theme", "to": "Virtual Lab", "width": 1}, {"from": "Reproducible AI4Science Workflows, Trust_P", "relation": "primary_theme", "to": "Clueless-scientist", "width": 1}, {"from": "Reproducible AI4Science Workflows, Trust_P", "relation": "primary_theme", "to": "Ragalicious", "width": 1}, {"from": "Reproducible AI4Science Workflows, Trust_P", "relation": "primary_theme", "to": "AssemblAI", "width": 1}, {"from": "Reproducible AI4Science Workflows, Trust_P", "relation": "primary_theme", "to": "Best Team", "width": 1}, {"from": "Reproducible AI4Science Workflows, Trust_P", "relation": "primary_theme", "to": "Parse Patrol", "width": 1}, {"from": "Reproducible AI4Science Workflows, Trust_P", "relation": "primary_theme", "to": "Fordham Reasoning Team", "width": 1}, {"from": "Reproducible AI4Science Workflows, Trust_P", "relation": "primary_theme", "to": "SciForge", "width": 1}, {"from": "Reproducible AI4Science Workflows, Trust_P", "relation": "primary_theme", "to": "RealWorldChem", "width": 1}, {"from": "Reproducible AI4Science Workflows, Trust_P", "relation": "primary_theme", "to": "Titanarium", "width": 1}, {"from": "Reproducible AI4Science Workflows, Trust_P", "relation": "primary_theme", "to": "TEAM Alex Oh", "width": 1}, {"from": "Reproducible AI4Science Workflows, Trust_P", "relation": "primary_theme", "to": "Team Alloyed Minds", "width": 1}, {"from": "Reproducible AI4Science Workflows, Trust_P", "relation": "primary_theme", "to": "MINT LLM", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_S", "relation": "secondary_theme", "to": "AgentHackers", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_S", "relation": "secondary_theme", "to": "MJS", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_S", "relation": "secondary_theme", "to": "Materials Design Group", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_S", "relation": "secondary_theme", "to": "SCALE: Scaffold Conscious Agent for Learning \u0026 Exploration", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_S", "relation": "secondary_theme", "to": "BASIS \u201a\u00c4\u00ec Bulk And Surface Interface Simulations with Intelligent Systems", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_S", "relation": "secondary_theme", "to": "RedoxFlow", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_S", "relation": "secondary_theme", "to": "T2-Crystal-Relaxation", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_S", "relation": "secondary_theme", "to": "CrysTalk", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_S", "relation": "secondary_theme", "to": "Amalgam-NCSU", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_S", "relation": "secondary_theme", "to": "LARA-HPC: A LAnguage model-powered Research Assistant for HPC", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_S", "relation": "secondary_theme", "to": "VASPilot", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_S", "relation": "secondary_theme", "to": "PhaseDiag Agents", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_S", "relation": "secondary_theme", "to": "LLM4ConProp", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_S", "relation": "secondary_theme", "to": "PolyPredictor", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_S", "relation": "secondary_theme", "to": "ChemGraph-IR", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_S", "relation": "secondary_theme", "to": "LIAC\u0027s  AdsKRK and DynaAgent", "width": 1}, {"from": "Autonomous Discovery, Agents, Labs_S", "relation": "secondary_theme", "to": "MINT LLM", "width": 1}, {"from": "Generative And Inverse Design_S", "relation": "secondary_theme", "to": "The Fullerene Factory", "width": 1}, {"from": "CryoSensor", "relation": "secondary_theme", "to": "Scientific Data Curation_S", "width": 1}, {"from": "Scientific Data Curation_S", "relation": "secondary_theme", "to": "ATOMS Lab", "width": 1}, {"from": "TIB AI4SCI", "relation": "secondary_theme", "to": "Educational and Collaborative AI Tools_S", "width": 1}, {"from": "Educational and Collaborative AI Tools_S", "relation": "secondary_theme", "to": "MaterialMind", "width": 1}, {"from": "Baker", "relation": "secondary_theme", "to": "Experimental Data Analysis_S", "width": 1}, {"from": "LaBros", "relation": "primary_theme", "to": "Educational and Collaborative AI Tools_P", "width": 1}, {"from": "LaBros", "relation": "secondary_theme", "to": "Reproducible AI4Science Workflows, Trust_S", "width": 1}, {"from": "Educational and Collaborative AI Tools_P", "relation": "primary_theme", "to": "MindMesh", "width": 1}, {"from": "Educational and Collaborative AI Tools_P", "relation": "primary_theme", "to": "MatSci LapLab", "width": 1}, {"from": "Reproducible AI4Science Workflows, Trust_S", "relation": "secondary_theme", "to": "MindMesh", "width": 1}, {"from": "Reproducible AI4Science Workflows, Trust_S", "relation": "secondary_theme", "to": "MatSci LapLab", "width": 1}, {"from": "Reproducible AI4Science Workflows, Trust_S", "relation": "secondary_theme", "to": "NeuroSymbolic", "width": 1}, {"from": "Reproducible AI4Science Workflows, Trust_S", "relation": "secondary_theme", "to": "RedoxFlow", "width": 1}, {"from": "Reproducible AI4Science Workflows, Trust_S", "relation": "secondary_theme", "to": "Material AI Agent Team", "width": 1}, {"from": "Reproducible AI4Science Workflows, Trust_S", "relation": "secondary_theme", "to": "CrysTalk", "width": 1}, {"from": "Reproducible AI4Science Workflows, Trust_S", "relation": "secondary_theme", "to": "VASPilot", "width": 1}, {"from": "SciForge", "relation": "secondary_theme", "to": "Computational Physics_S", "width": 1}, {"from": "Computational Physics_S", "relation": "secondary_theme", "to": "RealWorldChem", "width": 1}, {"from": "Computational Physics_S", "relation": "secondary_theme", "to": "CuPirates", "width": 1}, {"from": "Computational Physics_S", "relation": "secondary_theme", "to": "RedoxFlow", "width": 1}, {"from": "Computational Physics_S", "relation": "secondary_theme", "to": "T2-Crystal-Relaxation", "width": 1}, {"from": "Computational Physics_S", "relation": "secondary_theme", "to": "CrysTalk", "width": 1}, {"from": "Computational Physics_S", "relation": "secondary_theme", "to": "LLM4ConProp", "width": 1}, {"from": "CafChem", "relation": "primary_theme", "to": "Computational Physics_P", "width": 1}, {"from": "Computational Physics_P", "relation": "primary_theme", "to": "Team Storm", "width": 1}, {"from": "Computational Physics_P", "relation": "primary_theme", "to": "BASIS \u201a\u00c4\u00ec Bulk And Surface Interface Simulations with Intelligent Systems", "width": 1}, {"from": "Computational Physics_P", "relation": "primary_theme", "to": "Material AI Agent Team", "width": 1}, {"from": "Computational Physics_P", "relation": "primary_theme", "to": "CrysTalk", "width": 1}, {"from": "Computational Physics_P", "relation": "primary_theme", "to": "Amalgam-NCSU", "width": 1}, {"from": "Computational Physics_P", "relation": "primary_theme", "to": "LARA-HPC: A LAnguage model-powered Research Assistant for HPC", "width": 1}, {"from": "Computational Physics_P", "relation": "primary_theme", "to": "VASPilot", "width": 1}, {"from": "Computational Physics_P", "relation": "primary_theme", "to": "PhaseDiag Agents", "width": 1}, {"from": "Computational Physics_P", "relation": "primary_theme", "to": "ChemGraph-IR", "width": 1}, {"from": "Computational Physics_P", "relation": "primary_theme", "to": "LIAC\u0027s  AdsKRK and DynaAgent", "width": 1}, {"from": "ATOMS Lab", "relation": "primary_theme", "to": "Generative and Inverse Design_P", "width": 1}, {"from": "Generative and Inverse Design_P", "relation": "primary_theme", "to": "SCALE: Scaffold Conscious Agent for Learning \u0026 Exploration", "width": 1}, {"from": "Generative and Inverse Design_P", "relation": "primary_theme", "to": "Team Rait", "width": 1}, {"from": "Generative and Inverse Design_P", "relation": "primary_theme", "to": "Hugging Reactions", "width": 1}, {"from": "Generative and Inverse Design_P", "relation": "primary_theme", "to": "GAINS: Generative AI for No-PAIN Structures", "width": 1}, {"from": "Generative and Inverse Design_P", "relation": "primary_theme", "to": "CuPirates", "width": 1}, {"from": "Generative and Inverse Design_P", "relation": "primary_theme", "to": "CrystalGen", "width": 1}, {"from": "Generative and Inverse Design_P", "relation": "primary_theme", "to": "JH_sqr", "width": 1}, {"from": "Generative and Inverse Design_P", "relation": "primary_theme", "to": "LLM-BT", "width": 1}, {"from": "Generative and Inverse Design_P", "relation": "primary_theme", "to": "SmeLLMap", "width": 1}, {"from": "Generative and Inverse Design_P", "relation": "primary_theme", "to": "MatterMinds", "width": 1}, {"from": "Generative and Inverse Design_P", "relation": "primary_theme", "to": "ZeroMAT", "width": 1}, {"from": "PolyNexus", "relation": "primary_theme", "to": "Other_P", "width": 1}, {"from": "Other_P", "relation": "primary_theme", "to": "OntoKG", "width": 1}, {"from": "Other_P", "relation": "primary_theme", "to": "SciScribe", "width": 1}, {"from": "Other_P", "relation": "primary_theme", "to": "DepositionIQ", "width": 1}, {"from": "Other_P", "relation": "primary_theme", "to": "HEA query", "width": 1}, {"from": "Other_P", "relation": "primary_theme", "to": "ChemBot", "width": 1}, {"from": "Other_P", "relation": "primary_theme", "to": "RagyMaterials", "width": 1}, {"from": "Other_P", "relation": "primary_theme", "to": "GoldKnowledge Retrievers", "width": 1}, {"from": "ExpAlign", "relation": "primary_theme", "to": "Scientific Data Curation_P", "width": 1}, {"from": "Scientific Data Curation_P", "relation": "primary_theme", "to": "BandgapMiner", "width": 1}, {"from": "Scientific Data Curation_P", "relation": "primary_theme", "to": "MuMMIE", "width": 1}, {"from": "Scientific Data Curation_P", "relation": "primary_theme", "to": "OntoMapper", "width": 1}, {"from": "Scientific Data Curation_P", "relation": "primary_theme", "to": "Cameliers", "width": 1}, {"from": "Scientific Data Curation_P", "relation": "primary_theme", "to": "Team_Tc", "width": 1}, {"from": "Scientific Data Curation_P", "relation": "primary_theme", "to": "L.A.R.A", "width": 1}, {"from": "AESOP", "relation": "secondary_theme", "to": "Other_S", "width": 1}, {"from": "Other_S", "relation": "secondary_theme", "to": "ThinFilm.ai", "width": 1}, {"from": "Other_S", "relation": "secondary_theme", "to": "Team Storm", "width": 1}, {"from": "nan", "relation": "primary_theme", "to": "nan_P", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "forceAtlas2Based": {
+            "avoidOverlap": 0,
+            "centralGravity": 0.01,
+            "damping": 0.4,
+            "gravitationalConstant": -50,
+            "springConstant": 0.08,
+            "springLength": 100
+        },
+        "solver": "forceAtlas2Based",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
